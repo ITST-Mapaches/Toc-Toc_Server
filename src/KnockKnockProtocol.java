@@ -1,5 +1,7 @@
 import java.net.*;
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class KnockKnockProtocol {
     //? constantes que permiten saber el punto en que se encuentra la broma
@@ -15,15 +17,43 @@ public class KnockKnockProtocol {
     private int state = WAITING;
     private int currentJoke = 0;
 
-    //? arreglo con las pistas
-    private String[] clues = {"Turnip", "Little Old Lady", "Atch", "Who", "Who"};
-    
-    //? respuestas a las pistas
-    private String[] answers = {"Turnip the heat, it's cold in here!",
-            "I didn't know you could yodel!",
-            "Bless you!",
-            "Is there an owl in here?",
-            "Is there an echo in here?"};
+    //! Lista con pistas
+    List<String> pistas;
+    //! Lista con respuestas
+    List<String> respuestas;
+
+
+    //!Constructor vacío
+    public KnockKnockProtocol() {
+        //!inicialización de arraylists pistas
+        this.pistas = new ArrayList<>();
+        //!poblado de arraylists pistas
+        agregaPistas();
+
+        //!inicialización de arraylists respuestas
+        this.respuestas = new ArrayList<>();
+        //!poblado de arraylists respuestas
+        agregaRespuestas();
+    }
+
+    //!Método que agrega pistas a la lista de pistas
+    public void agregaPistas() {
+        this.pistas.add("ito");
+        this.pistas.add("Tomas");
+        this.pistas.add("Lola");
+        this.pistas.add("Santa");
+        this.pistas.add("Llito");
+    }
+
+    //!Método que agrega respuestas a la lista de respuestas
+    public void agregaRespuestas() {
+        this.respuestas.add("El que te vio hace ratito");
+        this.respuestas.add("Agua, por favor");
+        this.respuestas.add("Loladrones");
+        this.respuestas.add("Santander, venimos a embargarle la casa por no pagar");
+        this.respuestas.add("yo, pollito!");
+    }
+
 
     /**
      * ? Método que
@@ -36,39 +66,40 @@ public class KnockKnockProtocol {
 
         //? si el estado esta en esperando, envia la frase y el estado cambia
         if (state == WAITING) {
-            theOutput = "Knock! Knock!";
+            theOutput = "toc! toc!";
             state = SENTKNOCKKNOCK;
 
             //? si ya se envío la frase, es decir si ya dijmos knock knock
         } else if (state == SENTKNOCKKNOCK) {
             //? si la entrada (lo que escribió el cliente) es who's there?
-            if (theInput.equalsIgnoreCase("Who's there?")) {
+            if (theInput.equalsIgnoreCase("Quien es?")) {
                 //? entonces se envía el primer elemento de clues 'Turnip'
-                theOutput = clues[currentJoke];
+//                theOutput = clues[currentJoke];
+                theOutput = pistas.get(currentJoke);
                 //?el estado cambia a pista enviada
                 state = SENTCLUE;
 
                 //? si no es asi (si el cliente no escribe 'Who's there?') la respuesta es "se supone que debiste haber dicho who's there"
             } else {
-                theOutput = "You're supposed to say \"Who's there?\"! " +
-                        "Try again. Knock! Knock!";
+                theOutput = "debiste decir \"Quien es?\" " +
+                        "Prueba de nuevo. toc! toc!";
             }
 
             //? si es estado es igual a : (si ya se envió una pista)
         } else if (state == SENTCLUE) {
-            // ? si la respuesta del cliente es igual a la pista que le envío + who?
-            if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
+            // ? si la respuesta del cliente es igual a la pista que le envío + ?
+            if (theInput.equalsIgnoreCase(pistas.get(currentJoke) + "?")) {
                 //? la respuesta de este es el primer elemento del array answers y le pregunta si quiere otra broma
-                theOutput = answers[currentJoke] + " Want another? (y/n)";
+                theOutput = respuestas.get(currentJoke) + " Quieres otra super broma? (y/n)";
                 //? el estado es 'otra', es decir que el cliente quiere otra broma
                 state = ANOTHER;
 
                 //? si no responde lo esperado entonces le dice que se supone que debió haber constestado x
             } else {
-                theOutput = "You're supposed to say \"" +
-                        clues[currentJoke] +
-                        " who?\"" +
-                        "! Try again. Knock! Knock!";
+                theOutput = "Debiste decir \"" +
+                        pistas.get(currentJoke) +
+                        " ?\"" +
+                        "Prueba de nuevo. Toc! Toc!";
                 //? el estado de nuevo es enviar knock kcnok
                 state = SENTKNOCKKNOCK;
             }
@@ -77,7 +108,7 @@ public class KnockKnockProtocol {
         } else if (state == ANOTHER) {
             //? si la respuesta del cliente es y, es decir que sí quiere otra broma
             if (theInput.equalsIgnoreCase("y")) {
-                theOutput = "Knock! Knock!";
+                theOutput = "Toc! Toc!";
                 if (currentJoke == (NUMJOKES - 1))
                     currentJoke = 0;
                 else
@@ -85,7 +116,7 @@ public class KnockKnockProtocol {
                 state = SENTKNOCKKNOCK;
                 //? si el usuario no quiere otra broma la respuesta de este es adios
             } else {
-                theOutput = "Bye.";
+                theOutput = "Adios!.";
                 state = WAITING;
             }
         }
@@ -93,6 +124,4 @@ public class KnockKnockProtocol {
     }
 }
 
-//TODO: Cambiar los arrelgos 'clues' y 'answers por Arraylist<>'
-//TODO: Cambiar las bromas por bromas en español, cambiar pistas y respuestas por bromas en español
-//TODO:
+//TODO: implementar hilos
